@@ -1,7 +1,6 @@
-package dev.onelenyk.crudfather.data.scheme
+package dev.onelenyk.crudfather.domain.scheme
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.*
 
 @Serializable
 enum class FieldType {

@@ -1,6 +1,6 @@
-package dev.onelenyk.crudfather.data.scheme
+package dev.onelenyk.crudfather.domain.scheme
 
-import dev.onelenyk.crudfather.data.dynamic.DynamicModel
+import dev.onelenyk.crudfather.domain.dynamic.DynamicModel
 import kotlinx.serialization.json.*
 
 object DynamicModelManager {
@@ -42,13 +42,20 @@ object DynamicModelManager {
 
     data class ValidationResult(val isValid: Boolean, val log: List<String>)
 
-    fun validateDynamicModel(modelDefinition: ModelDefinition, dynamicModel: DynamicModel): ValidationResult {
+    fun validateDynamicModel(
+        modelDefinition: ModelDefinition,
+        dynamicModel: DynamicModel,
+    ): ValidationResult {
         val log = mutableListOf<String>()
         val isValid = validateJsonModel(modelDefinition, dynamicModel.toJsonOutput(), log)
         return ValidationResult(isValid, log)
     }
 
-    private fun validateJsonModel(modelDefinition: ModelDefinition, jsonData: JsonObject, log: MutableList<String>): Boolean {
+    private fun validateJsonModel(
+        modelDefinition: ModelDefinition,
+        jsonData: JsonObject,
+        log: MutableList<String>,
+    ): Boolean {
         var isValid = true
         for (field in modelDefinition.fields) {
             val jsonElement = jsonData[field.name]
@@ -93,26 +100,34 @@ object DynamicModelManager {
         return isValid
     }
 
-    private fun validateJsonArray(field: FieldDefinition, jsonArray: JsonArray, log: MutableList<String>): Boolean {
+    private fun validateJsonArray(
+        field: FieldDefinition,
+        jsonArray: JsonArray,
+        log: MutableList<String>,
+    ): Boolean {
         val elementType = field.elementType ?: return false
         for (element in jsonArray) {
             when (elementType) {
-                FieldType.STRING -> if (!element.jsonPrimitive.isString) {
-                    log.add("Array element in field '${field.name}' is not a valid string")
-                    return false
-                }
-                FieldType.INTEGER -> if (element.jsonPrimitive.intOrNull == null) {
-                    log.add("Array element in field '${field.name}' is not a valid integer")
-                    return false
-                }
-                FieldType.BOOLEAN -> if (element.jsonPrimitive.booleanOrNull == null) {
-                    log.add("Array element in field '${field.name}' is not a valid boolean")
-                    return false
-                }
-                FieldType.OBJECT -> if (!validateJsonModel(ModelDefinition(field.name, field.nestedFields ?: emptyList()), element.jsonObject, log)) {
-                    log.add("Array element in field '${field.name}' is not a valid object")
-                    return false
-                }
+                FieldType.STRING ->
+                    if (!element.jsonPrimitive.isString) {
+                        log.add("Array element in field '${field.name}' is not a valid string")
+                        return false
+                    }
+                FieldType.INTEGER ->
+                    if (element.jsonPrimitive.intOrNull == null) {
+                        log.add("Array element in field '${field.name}' is not a valid integer")
+                        return false
+                    }
+                FieldType.BOOLEAN ->
+                    if (element.jsonPrimitive.booleanOrNull == null) {
+                        log.add("Array element in field '${field.name}' is not a valid boolean")
+                        return false
+                    }
+                FieldType.OBJECT ->
+                    if (!validateJsonModel(ModelDefinition(field.name, field.nestedFields ?: emptyList()), element.jsonObject, log)) {
+                        log.add("Array element in field '${field.name}' is not a valid object")
+                        return false
+                    }
                 FieldType.ARRAY -> {
                     log.add("Nested arrays are not supported for field '${field.name}'")
                     return false

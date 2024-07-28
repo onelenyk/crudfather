@@ -1,11 +1,11 @@
-package dev.onelenyk.crudfather.di
+package dev.onelenyk.crudfather.app.di
 
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import dev.onelenyk.crudfather.app.routing.ServerRouting
-import dev.onelenyk.crudfather.data.scheme.ModelScheme
-import dev.onelenyk.crudfather.db.MongoDBManager
-import dev.onelenyk.crudfather.repository.DynamicRepository
-import dev.onelenyk.crudfather.repository.ModelSchemeRepository
+import dev.onelenyk.crudfather.domain.scheme.ModelScheme
+import dev.onelenyk.crudfather.data.db.MongoDBManager
+import dev.onelenyk.crudfather.domain.repository.DynamicRepository
+import dev.onelenyk.crudfather.domain.repository.ModelSchemeRepository
 import io.github.cdimascio.dotenv.Dotenv
 import io.github.cdimascio.dotenv.dotenv
 import kotlinx.coroutines.CoroutineScope

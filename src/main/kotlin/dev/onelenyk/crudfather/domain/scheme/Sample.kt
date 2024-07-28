@@ -1,10 +1,10 @@
-package dev.onelenyk.crudfather.data.scheme
+package dev.onelenyk.crudfather.domain.scheme
 
-import dev.onelenyk.crudfather.data.scheme.DynamicModelManager.generateModelDefinition
+import dev.onelenyk.crudfather.domain.scheme.DynamicModelManager.generateModelDefinition
 import kotlinx.serialization.json.*
 import kotlin.random.Random
 
-class Sample {
+object Sample {
     private fun generateSampleJson(modelDefinition: ModelDefinition): JsonObject {
         val jsonObject =
             buildJsonObject {

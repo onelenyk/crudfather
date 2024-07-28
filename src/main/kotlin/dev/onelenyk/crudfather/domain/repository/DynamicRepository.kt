@@ -1,4 +1,4 @@
-package dev.onelenyk.crudfather.repository
+package dev.onelenyk.crudfather.domain.repository
 
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.FindOneAndUpdateOptions

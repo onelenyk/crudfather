@@ -1,7 +1,7 @@
 // Define variables for project configurations
 val projectGroup = "dev.onelenyk"
 val appId = "crudfather"
-val mainAppClassName = "$projectGroup.$appId.ApplicationKt"
+val mainAppClassName = "$projectGroup.$appId.app.ApplicationKt"
 
 val ktorVersion: String by project
 val kotlinVersion: String by project
@@ -131,5 +131,3 @@ tasks.register<Jar>("dokkaJavadocJar") {
     from(tasks.dokkaJavadoc.flatMap { it.outputDirectory })
     archiveClassifier.set("javadoc")
 }
-
-

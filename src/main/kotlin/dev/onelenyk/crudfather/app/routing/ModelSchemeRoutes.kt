@@ -1,9 +1,9 @@
 package dev.onelenyk.crudfather.app.routing
 
 import com.mongodb.client.model.Updates
-import dev.onelenyk.crudfather.data.scheme.DynamicModelManager.generateModelDefinition
-import dev.onelenyk.crudfather.data.scheme.ModelScheme
-import dev.onelenyk.crudfather.repository.ModelSchemeRepository
+import dev.onelenyk.crudfather.domain.scheme.DynamicModelManager.generateModelDefinition
+import dev.onelenyk.crudfather.domain.scheme.ModelScheme
+import dev.onelenyk.crudfather.domain.repository.ModelSchemeRepository
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*

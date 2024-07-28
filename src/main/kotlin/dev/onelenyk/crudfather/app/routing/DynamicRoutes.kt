@@ -1,16 +1,15 @@
 package dev.onelenyk.crudfather.app.routing
 
-import dev.onelenyk.crudfather.data.dynamic.DynamicModel
-import dev.onelenyk.crudfather.data.scheme.DynamicModelManager.validateDynamicModel
-import dev.onelenyk.crudfather.repository.DynamicRepository
-import dev.onelenyk.crudfather.repository.ModelSchemeRepository
+import dev.onelenyk.crudfather.domain.dynamic.DynamicModel
+import dev.onelenyk.crudfather.domain.scheme.DynamicModelManager.validateDynamicModel
+import dev.onelenyk.crudfather.domain.repository.DynamicRepository
+import dev.onelenyk.crudfather.domain.repository.ModelSchemeRepository
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonArray
 
 class DynamicRoutes(private val repository: ModelSchemeRepository, private val dynamicRepository: DynamicRepository) {
     fun registerRoutes(routing: Routing) {
@@ -65,12 +64,13 @@ class DynamicRoutes(private val repository: ModelSchemeRepository, private val d
                         return@get
                     }
 
-                    val output = dynamicRepository.getAllDocuments(modelName)
-                        .map {
-                            DynamicModel.fromDocument(modelName, it)
-                        }.map {
-                            it.toJsonOutput()
-                        }.toString()
+                    val output =
+                        dynamicRepository.getAllDocuments(modelName)
+                            .map {
+                                DynamicModel.fromDocument(modelName, it)
+                            }.map {
+                                it.toJsonOutput()
+                            }.toString()
                     val test = Json.parseToJsonElement(output)
                     call.respond(HttpStatusCode.Found, test)
                 } catch (e: Exception) {

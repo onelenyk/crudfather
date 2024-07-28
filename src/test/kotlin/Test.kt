@@ -9,19 +9,15 @@ import io.ktor.server.application.*
 import io.ktor.server.config.*
 import io.ktor.server.plugins.callloging.*
 import io.ktor.server.testing.*
-import junit.framework.TestCase.assertEquals
-import kotlinx.coroutines.runBlocking
 import org.junit.AfterClass
 import org.junit.BeforeClass
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-
 
 fun ApplicationTestBuilder.setupTestApplication(server: Server) {
     environment {
-        config = MapApplicationConfig(
-            "ktor.deployment.port" to 8080.toString()
-        )
+        config =
+            MapApplicationConfig(
+                "ktor.deployment.port" to 8080.toString(),
+            )
     }
     application {
         server.module(this)
@@ -29,7 +25,6 @@ fun ApplicationTestBuilder.setupTestApplication(server: Server) {
 }
 
 class GeneralRoutesApiClient(private val client: HttpClient, private val baseUrl: String) {
-
     suspend fun checkLive(): HttpResponse {
         return client.get("$baseUrl/live")
     }
@@ -67,10 +62,11 @@ open class BaseTest {
     }
 
     protected fun setupApiClients(port: Int = 8080) {
-        val client = HttpClient(CIO) {
-            followRedirects = false
-            install(Logging)
-        }
+        val client =
+            HttpClient(CIO) {
+                followRedirects = false
+                install(Logging)
+            }
 
         val baseUrl = "http://localhost:$port"
         generalApiClient = GeneralRoutesApiClient(client, baseUrl)
@@ -79,10 +75,11 @@ open class BaseTest {
     }
 }
 
-
 class ModelRoutesApiClient(private val client: HttpClient, private val baseUrl: String) {
-
-    suspend fun createModel(modelName: String, modelJson: String): HttpResponse {
+    suspend fun createModel(
+        modelName: String,
+        modelJson: String,
+    ): HttpResponse {
         return client.post("$baseUrl/models?name=$modelName") {
             contentType(ContentType.Application.Json)
             setBody(modelJson)
@@ -97,7 +94,10 @@ class ModelRoutesApiClient(private val client: HttpClient, private val baseUrl: 
         return client.get("$baseUrl/models/$id")
     }
 
-    suspend fun updateModel(id: String, updates: String): HttpResponse {
+    suspend fun updateModel(
+        id: String,
+        updates: String,
+    ): HttpResponse {
         return client.put("$baseUrl/models/$id") {
             contentType(ContentType.Application.Json)
             setBody(updates)
@@ -109,12 +109,13 @@ class ModelRoutesApiClient(private val client: HttpClient, private val baseUrl: 
     }
 }
 
-
 class DynamicRoutesApiClient(private val client: HttpClient, private val baseUrl: String) {
-
     val dynamic = "$baseUrl/dynamic"
 
-    suspend fun createDynamicDocument(modelName: String, documentJson: String): HttpResponse {
+    suspend fun createDynamicDocument(
+        modelName: String,
+        documentJson: String,
+    ): HttpResponse {
         return client.post("$dynamic/$modelName") {
             contentType(ContentType.Application.Json)
             setBody(documentJson)
@@ -125,21 +126,28 @@ class DynamicRoutesApiClient(private val client: HttpClient, private val baseUrl
         return client.get("$dynamic/$modelName")
     }
 
-    suspend fun getDynamicDocumentById(modelName: String, id: String): HttpResponse {
+    suspend fun getDynamicDocumentById(
+        modelName: String,
+        id: String,
+    ): HttpResponse {
         return client.get("$dynamic/$modelName/$id")
     }
 
-    suspend fun updateDynamicDocument(modelName: String, id: String, updates: String): HttpResponse {
+    suspend fun updateDynamicDocument(
+        modelName: String,
+        id: String,
+        updates: String,
+    ): HttpResponse {
         return client.put("$dynamic/$modelName/$id") {
             contentType(ContentType.Application.Json)
             setBody(updates)
         }
     }
 
-    suspend fun deleteDynamicDocument(modelName: String, id: String): HttpResponse {
+    suspend fun deleteDynamicDocument(
+        modelName: String,
+        id: String,
+    ): HttpResponse {
         return client.delete("$dynamic/$modelName/$id")
     }
 }
-
-
-

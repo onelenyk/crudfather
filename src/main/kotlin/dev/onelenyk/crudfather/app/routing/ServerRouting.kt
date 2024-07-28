@@ -1,7 +1,7 @@
 package dev.onelenyk.crudfather.app.routing
 
-import dev.onelenyk.crudfather.repository.DynamicRepository
-import dev.onelenyk.crudfather.repository.ModelSchemeRepository
+import dev.onelenyk.crudfather.domain.repository.DynamicRepository
+import dev.onelenyk.crudfather.domain.repository.ModelSchemeRepository
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -42,26 +42,4 @@ suspend fun PipelineContext<Unit, ApplicationCall>.checkModelExists(
     }
 
     return true
-}
-
-suspend fun PipelineContext<Unit, ApplicationCall>.receiveJsonDocumentWithId(): Document {
-    val json = call.receiveText()
-    val document = Document.parse(json)
-
-    // Check if the _id field is present, if not, generate one
-    if (!document.containsKey("_id")) {
-        document["_id"] = ObjectId()
-    } else {
-        // Ensure the _id field follows the required rules
-        val id = document["_id"]
-        if (id !is ObjectId && id !is String) {
-            throw IllegalArgumentException("Invalid _id field type")
-        }
-        // Convert _id to ObjectId if it is a valid string representation of ObjectId
-        if (id is String && ObjectId.isValid(id)) {
-            document["_id"] = ObjectId(id)
-        }
-    }
-
-    return document
 }

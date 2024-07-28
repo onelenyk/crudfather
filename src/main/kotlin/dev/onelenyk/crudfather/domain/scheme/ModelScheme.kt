@@ -1,4 +1,4 @@
-package dev.onelenyk.crudfather.data.scheme
+package dev.onelenyk.crudfather.domain.scheme
 
 import dev.onelenyk.crudfather.utils.UUIDSerializer
 import kotlinx.serialization.Serializable

@@ -1,9 +1,9 @@
-package dev.onelenyk.crudfather.repository
+package dev.onelenyk.crudfather.domain.repository
 
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.UpdateOptions
 import com.mongodb.kotlin.client.coroutine.MongoCollection
-import dev.onelenyk.crudfather.data.scheme.ModelScheme
+import dev.onelenyk.crudfather.domain.scheme.ModelScheme
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList

@@ -1,4 +1,4 @@
-package dev.onelenyk.crudfather.db
+package dev.onelenyk.crudfather.data.db
 
 import com.mongodb.ConnectionString
 import com.mongodb.MongoClientSettings
@@ -7,7 +7,7 @@ import com.mongodb.ServerApiVersion
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
-import dev.onelenyk.crudfather.di.DbCredentials
+import dev.onelenyk.crudfather.app.di.DbCredentials
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.bson.Document
