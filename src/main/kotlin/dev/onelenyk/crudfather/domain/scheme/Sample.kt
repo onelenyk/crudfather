@@ -31,7 +31,7 @@ object Sample {
                             FieldType.OBJECT ->
                                 add(
                                     generateSampleJson(
-                                        ModelDefinition(
+                                        DynamicModelDefinition(
                                             field.name,
                                             field.nestedFields ?: emptyList(),
                                         ),
