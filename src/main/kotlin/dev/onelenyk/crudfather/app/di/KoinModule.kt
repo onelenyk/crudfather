@@ -2,7 +2,7 @@ package dev.onelenyk.crudfather.app.di
 
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import dev.onelenyk.crudfather.app.routing.ServerRouting
-import dev.onelenyk.crudfather.domain.scheme.ModelScheme
+import dev.onelenyk.crudfather.domain.models.DynamicModelScheme
 import dev.onelenyk.crudfather.data.db.MongoDBManager
 import dev.onelenyk.crudfather.domain.repository.DynamicRepository
 import dev.onelenyk.crudfather.domain.repository.ModelSchemeRepository
@@ -31,7 +31,7 @@ private fun provideCoroutineScope(): CoroutineScope {
 }
 
 fun modelSchemeRepository(mongoDBManager: MongoDBManager): ModelSchemeRepository {
-    val collection = mongoDBManager.getCollection("models", ModelScheme::class.java)
+    val collection = mongoDBManager.getCollection("models", DynamicModelScheme::class.java)
     return ModelSchemeRepository(collection)
 }
 

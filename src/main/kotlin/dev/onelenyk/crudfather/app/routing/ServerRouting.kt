@@ -1,5 +1,7 @@
 package dev.onelenyk.crudfather.app.routing
 
+import dev.onelenyk.crudfather.app.routing.controllers.DynamicController
+import dev.onelenyk.crudfather.app.routing.controllers.ModelSchemeController
 import dev.onelenyk.crudfather.domain.repository.DynamicRepository
 import dev.onelenyk.crudfather.domain.repository.ModelSchemeRepository
 import io.ktor.http.*
@@ -16,30 +18,16 @@ class ServerRouting(
     private val repository: ModelSchemeRepository,
     private val dynamicRepository: DynamicRepository,
 ) {
-    private val modelSchemeRoutes = ModelSchemeRoutes(repository)
-    private val dynamicRoutes = DynamicRoutes(repository, dynamicRepository)
+    private val modelSchemeController = ModelSchemeController(repository)
+    private val dynamicController = DynamicController(repository, dynamicRepository)
+
+    private val modelSchemeRoutes = ModelSchemeRoutes(modelSchemeController)
+    private val dynamicRoutes = DynamicRoutes(dynamicController)
+    private val utilRoutes = UtilRoutes()
 
     fun registerRoutes(routing: Routing) {
         modelSchemeRoutes.registerRoutes(routing)
         dynamicRoutes.registerRoutes(routing)
-        routing.routesInfo()
+        utilRoutes.registerRoutes(routing)
     }
-}
-
-suspend fun PipelineContext<Unit, ApplicationCall>.checkModelExists(
-    repository: ModelSchemeRepository,
-    modelName: String,
-): Boolean {
-    if (modelName.isBlank()) {
-        call.respond(HttpStatusCode.BadRequest, "Model name is required")
-        return false
-    }
-
-    val modelExists = runBlocking { repository.modelExistsByName(modelName) }
-    if (!modelExists) {
-        call.respond(HttpStatusCode.NotFound, "Model $modelName not found")
-        return false
-    }
-
-    return true
 }

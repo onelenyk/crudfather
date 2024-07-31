@@ -1,16 +1,31 @@
 package dev.onelenyk.crudfather.domain.scheme
 
-import dev.onelenyk.crudfather.domain.dynamic.DynamicModel
+import dev.onelenyk.crudfather.domain.models.DynamicModel
+import dev.onelenyk.crudfather.domain.models.DynamicModelDefinition
+import dev.onelenyk.crudfather.domain.models.DynamicModelDefinition.FieldDefinition
+import dev.onelenyk.crudfather.domain.models.DynamicModelDefinition.FieldDefinition.FieldType
 import kotlinx.serialization.json.*
 
 object DynamicModelManager {
+
+    data class ValidationResult(val isValid: Boolean, val log: List<String>)
+
     fun generateModelDefinition(
         modelName: String,
         json: String,
-    ): ModelDefinition {
+    ): DynamicModelDefinition {
         val jsonObject = Json.parseToJsonElement(json).jsonObject
         val fields = parseJsonObject(jsonObject)
-        return ModelDefinition(modelName, fields)
+        return DynamicModelDefinition(modelName, fields)
+    }
+
+    fun validateDynamicModel(
+        modelDefinition: DynamicModelDefinition,
+        dynamicModel: DynamicModel,
+    ): ValidationResult {
+        val log = mutableListOf<String>()
+        val isValid = validateJsonModel(modelDefinition, dynamicModel.toJsonOutput(), log)
+        return ValidationResult(isValid, log)
     }
 
     private fun parseJsonObject(jsonObject: JsonObject): List<FieldDefinition> {
