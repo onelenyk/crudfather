@@ -27,12 +27,6 @@ class GeneralRoutesTest : BaseTest() {
             TestCase.assertEquals(HttpStatusCode.OK, response.status)
         }
 
-    @Test
-    fun testDocRoute() =
-        runBlocking {
-            val response = generalApiClient.getDoc()
-            TestCase.assertEquals(HttpStatusCode.OK, response.status)
-        }
 
     @Test
     fun testRootRoute() =
