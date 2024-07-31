@@ -40,19 +40,8 @@ object DynamicModelManager {
         return fields
     }
 
-    data class ValidationResult(val isValid: Boolean, val log: List<String>)
-
-    fun validateDynamicModel(
-        modelDefinition: ModelDefinition,
-        dynamicModel: DynamicModel,
-    ): ValidationResult {
-        val log = mutableListOf<String>()
-        val isValid = validateJsonModel(modelDefinition, dynamicModel.toJsonOutput(), log)
-        return ValidationResult(isValid, log)
-    }
-
     private fun validateJsonModel(
-        modelDefinition: ModelDefinition,
+        modelDefinition: DynamicModelDefinition,
         jsonData: JsonObject,
         log: MutableList<String>,
     ): Boolean {
@@ -71,24 +60,33 @@ object DynamicModelManager {
                         isValid = false
                     }
                 }
+
                 FieldType.INTEGER -> {
                     if (jsonElement.jsonPrimitive.intOrNull == null) {
                         log.add("Field '${field.name}' is not a valid integer")
                         isValid = false
                     }
                 }
+
                 FieldType.BOOLEAN -> {
                     if (jsonElement.jsonPrimitive.booleanOrNull == null) {
                         log.add("Field '${field.name}' is not a valid boolean")
                         isValid = false
                     }
                 }
+
                 FieldType.OBJECT -> {
-                    if (!validateJsonModel(ModelDefinition(field.name, field.nestedFields ?: emptyList()), jsonElement.jsonObject, log)) {
+                    if (!validateJsonModel(
+                            DynamicModelDefinition(field.name, field.nestedFields ?: emptyList()),
+                            jsonElement.jsonObject,
+                            log
+                        )
+                    ) {
                         log.add("Field '${field.name}' is not a valid object")
                         isValid = false
                     }
                 }
+
                 FieldType.ARRAY -> {
                     if (!validateJsonArray(field, jsonElement.jsonArray, log)) {
                         log.add("Field '${field.name}' is not a valid array")
@@ -113,84 +111,34 @@ object DynamicModelManager {
                         log.add("Array element in field '${field.name}' is not a valid string")
                         return false
                     }
+
                 FieldType.INTEGER ->
                     if (element.jsonPrimitive.intOrNull == null) {
                         log.add("Array element in field '${field.name}' is not a valid integer")
                         return false
                     }
+
                 FieldType.BOOLEAN ->
                     if (element.jsonPrimitive.booleanOrNull == null) {
                         log.add("Array element in field '${field.name}' is not a valid boolean")
                         return false
                     }
+
                 FieldType.OBJECT ->
-                    if (!validateJsonModel(ModelDefinition(field.name, field.nestedFields ?: emptyList()), element.jsonObject, log)) {
+                    if (!validateJsonModel(
+                            DynamicModelDefinition(field.name, field.nestedFields ?: emptyList()),
+                            element.jsonObject,
+                            log
+                        )
+                    ) {
                         log.add("Array element in field '${field.name}' is not a valid object")
                         return false
                     }
+
                 FieldType.ARRAY -> {
                     log.add("Nested arrays are not supported for field '${field.name}'")
                     return false
                 }
-            }
-        }
-        return true
-    }
-
-    fun validateDynamicModel2(
-        modelDefinition: ModelDefinition,
-        dynamicModel: DynamicModel,
-    ): Boolean {
-        val valid = validateJsonModel(modelDefinition = modelDefinition, dynamicModel.toJsonOutput())
-        return valid
-    }
-
-    private fun validateJsonModel(
-        modelDefinition: ModelDefinition,
-        jsonData: JsonObject,
-    ): Boolean {
-        for (field in modelDefinition.fields) {
-            val jsonElement = jsonData[field.name] ?: return false
-
-            when (field.type) {
-                FieldType.STRING -> if (!jsonElement.jsonPrimitive.isString) return false
-                FieldType.INTEGER -> if (jsonElement.jsonPrimitive.intOrNull == null) return false
-                FieldType.BOOLEAN -> if (jsonElement.jsonPrimitive.booleanOrNull == null) return false
-                FieldType.OBJECT ->
-                    if (!validateJsonModel(
-                            ModelDefinition(field.name, field.nestedFields ?: emptyList()),
-                            jsonElement.jsonObject,
-                        )
-                    ) {
-                        return false
-                    }
-
-                FieldType.ARRAY -> if (!validateJsonArray(field, jsonElement.jsonArray)) return false
-            }
-        }
-        return true
-    }
-
-    private fun validateJsonArray(
-        field: FieldDefinition,
-        jsonArray: JsonArray,
-    ): Boolean {
-        val elementType = field.elementType ?: return false
-        for (element in jsonArray) {
-            when (elementType) {
-                FieldType.STRING -> if (!element.jsonPrimitive.isString) return false
-                FieldType.INTEGER -> if (element.jsonPrimitive.intOrNull == null) return false
-                FieldType.BOOLEAN -> if (element.jsonPrimitive.booleanOrNull == null) return false
-                FieldType.OBJECT ->
-                    if (!validateJsonModel(
-                            ModelDefinition(field.name, field.nestedFields ?: emptyList()),
-                            element.jsonObject,
-                        )
-                    ) {
-                        return false
-                    }
-
-                FieldType.ARRAY -> return false // Nested arrays are not supported
             }
         }
         return true

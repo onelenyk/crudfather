@@ -1,16 +1,10 @@
 import dev.onelenyk.crudfather.app.Server
 import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.server.application.*
 import io.ktor.server.config.*
-import io.ktor.server.plugins.callloging.*
 import io.ktor.server.testing.*
-import org.junit.AfterClass
-import org.junit.BeforeClass
 
 fun ApplicationTestBuilder.setupTestApplication(server: Server) {
     environment {
@@ -39,39 +33,6 @@ class GeneralRoutesApiClient(private val client: HttpClient, private val baseUrl
 
     suspend fun getRoot(): HttpResponse {
         return client.get(baseUrl)
-    }
-}
-
-open class BaseTest {
-    protected lateinit var generalApiClient: GeneralRoutesApiClient
-    protected lateinit var modelRoutesApiClient: ModelRoutesApiClient
-    protected lateinit var dynamicRoutesApiClient: DynamicRoutesApiClient
-
-    companion object {
-        @BeforeClass
-        @JvmStatic
-        fun setup() {
-            // Global setup if necessary
-        }
-
-        @AfterClass
-        @JvmStatic
-        fun teardown() {
-            // Global teardown if necessary
-        }
-    }
-
-    protected fun setupApiClients(port: Int = 8080) {
-        val client =
-            HttpClient(CIO) {
-                followRedirects = false
-                install(Logging)
-            }
-
-        val baseUrl = "http://localhost:$port"
-        generalApiClient = GeneralRoutesApiClient(client, baseUrl)
-        modelRoutesApiClient = ModelRoutesApiClient(client, baseUrl)
-        dynamicRoutesApiClient = DynamicRoutesApiClient(client, baseUrl)
     }
 }
 
