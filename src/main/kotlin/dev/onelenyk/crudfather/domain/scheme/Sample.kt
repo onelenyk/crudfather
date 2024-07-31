@@ -1,11 +1,13 @@
 package dev.onelenyk.crudfather.domain.scheme
 
+import dev.onelenyk.crudfather.domain.models.DynamicModelDefinition
+import dev.onelenyk.crudfather.domain.models.DynamicModelDefinition.FieldDefinition.FieldType
 import dev.onelenyk.crudfather.domain.scheme.DynamicModelManager.generateModelDefinition
 import kotlinx.serialization.json.*
 import kotlin.random.Random
 
 object Sample {
-    private fun generateSampleJson(modelDefinition: ModelDefinition): JsonObject {
+    private fun generateSampleJson(modelDefinition: DynamicModelDefinition): JsonObject {
         val jsonObject =
             buildJsonObject {
                 modelDefinition.fields.forEach { field ->
@@ -15,12 +17,12 @@ object Sample {
         return jsonObject
     }
 
-    private fun generateSampleValue(field: FieldDefinition): JsonElement {
+    private fun generateSampleValue(field: DynamicModelDefinition.FieldDefinition): JsonElement {
         return when (field.type) {
             FieldType.STRING -> JsonPrimitive(generateRandomString())
             FieldType.INTEGER -> JsonPrimitive(generateRandomInt())
             FieldType.BOOLEAN -> JsonPrimitive(generateRandomBoolean())
-            FieldType.OBJECT -> generateSampleJson(ModelDefinition(field.name, field.nestedFields ?: emptyList()))
+            FieldType.OBJECT -> generateSampleJson(DynamicModelDefinition(field.name, field.nestedFields ?: emptyList()))
             FieldType.ARRAY ->
                 buildJsonArray {
                     repeat(3) {

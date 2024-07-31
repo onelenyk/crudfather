@@ -1,4 +1,4 @@
-package dev.onelenyk.crudfather.domain.dynamic
+package dev.onelenyk.crudfather.domain.models
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
